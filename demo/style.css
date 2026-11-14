@@ -83,9 +83,10 @@ main,
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   box-shadow: 0 10px 24px -12px rgba(91, 140, 255, 0.9);
 }
-.brand-name { font-size: 17px; }
-.site-nav { display: flex; gap: 18px; }
+.brand-name { font-size: 17px; white-space: nowrap; }
+.site-nav { display: flex; align-items: center; gap: 18px; }
 .site-nav a {
+  white-space: nowrap;
   color: var(--muted);
   text-decoration: none;
   font-size: 14px;
@@ -93,6 +94,26 @@ main,
   transition: color 0.16s;
 }
 .site-nav a:hover { color: var(--text); }
+.lang-toggle {
+  padding: 4px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: 0.16s;
+}
+.lang-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.lang-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 /* ---------- hero ---------- */
 .hero { padding: 30px 0 22px; }
@@ -447,6 +468,7 @@ select:focus, input[type="number"]:focus {
   .row .grow { flex-basis: 100%; }
 }
 @media (max-width: 460px) {
+  .site-header { flex-wrap: wrap; }
   .previews.three,
   .previews.two { grid-template-columns: 1fr; }
   .site-nav { gap: 12px; }

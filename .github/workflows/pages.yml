@@ -22,22 +22,9 @@ jobs:
       - name: Assemble the static site
         run: |
           mkdir -p _site
+          cp index.html _site/index.html
           cp -r demo _site/demo
           cp -r src _site/src
-          cat > _site/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta http-equiv="refresh" content="0; url=./demo/">
-            <link rel="canonical" href="./demo/">
-            <title>RAC-Hide — demo</title>
-          </head>
-          <body>
-            <p>Redirecting to the <a href="./demo/">RAC-Hide demo</a>…</p>
-          </body>
-          </html>
-          HTML
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

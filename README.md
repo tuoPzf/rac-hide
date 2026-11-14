@@ -27,13 +27,14 @@ Everything runs locally: the library never uploads an image anywhere.
 
 Try the full tool in your browser — nothing to install:
 
-**https://tuoPzf.github.io/rac-hide/demo/**
+**https://tuoPzf.github.io/rac-hide/**
 
-[![RAC-Hide browser demo](docs/demo.jpg)](https://tuoPzf.github.io/rac-hide/demo/)
+[![RAC-Hide browser demo](docs/demo.jpg)](https://tuoPzf.github.io/rac-hide/)
 
 The demo exposes every knob: capacity read-out, cover enhancement, the
 quality ↔ anti-compression slider, custom embedding parameters, progress
-feedback and previews. All computation stays on your device.
+feedback and previews, with an English/Chinese switch. The site root and
+`/demo/` serve the same page. All computation stays on your device.
 
 ---
 
@@ -116,14 +117,17 @@ const recovered = await extractImage(await decodeImageFile(blob));
 
 ### Run the demo locally
 
-The hosted demo is at **https://tuoPzf.github.io/rac-hide/demo/** (the site root
-redirects there). To run it from a checkout, serve the repository over HTTP
-(ES modules do not load from `file://`):
+The hosted demo is at **https://tuoPzf.github.io/rac-hide/** (the same page is
+also served at `/demo/`). To run it from a checkout, serve the repository over
+HTTP (ES modules do not load from `file://`):
 
 ```bash
 python3 -m http.server 8000
-# then open http://localhost:8000/demo/
+# then open http://localhost:8000/
 ```
+
+After editing `demo/index.html`, regenerate the root page with
+`npm run build:root`.
 
 ## Operating points
 
@@ -184,7 +188,9 @@ src/
   core.js           the codec: embed() / extract() / capacityBytes()
   browser.js        DOM helpers and high-level embedImage() / extractImage()
   index.js          public entry point
-demo/               standalone browser demo
+demo/               standalone browser demo (EN/ZH switch)
+demo/i18n.js        lightweight URL > storage > browser language i18n
+scripts/            build-root-index.mjs regenerates the root page
 test/               node:test suite
 docs/algorithm.md   detailed design notes
 ```
@@ -197,7 +203,9 @@ npm test
 
 The suite covers the RS codec, the DCT round-trip, interleaving, the spatial
 ruler (including a simulated rescale) and full embed/extract round-trips across
-several operating points.
+several operating points. The demo tests check the bilingual dictionaries,
+language precedence, storage fallback, root/demo asset resolution and that no
+old-site links or redirect pages remain.
 
 ## Security and ethics
 

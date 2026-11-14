@@ -1,25 +1,210 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=./demo/">
-  <link rel="canonical" href="./demo/">
-  <title>RAC-Hide — demo</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #0f1115;
-      color: #e6e8ee;
-      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    a { color: #4f8ef7; }
-  </style>
+<!-- Generated from demo/index.html by node scripts/build-root-index.mjs. Do not edit directly. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title data-i18n="meta.title">RAC-Hide — robust image steganography</title>
+<meta name="description" data-i18n-content="meta.description" content="Hide a secret image inside another so it survives JPEG re-compression and proportional rescaling. Runs entirely in your browser.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%235b8cff'/%3E%3Ctext x='16' y='22.5' text-anchor='middle' font-family='system-ui,sans-serif' font-size='18' font-weight='700' fill='%23fff'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./demo/style.css">
 </head>
 <body>
-  <p>Redirecting to the <a href="./demo/">RAC-Hide demo</a>…</p>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="site-header">
+  <a class="brand" href="https://github.com/tuoPzf/rac-hide">
+    <span class="brand-mark">R</span>
+    <span class="brand-name">RAC-Hide</span>
+  </a>
+  <nav class="site-nav">
+    <a href="https://github.com/tuoPzf/rac-hide" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/tuoPzf/rac-hide/blob/main/docs/algorithm.md" target="_blank" rel="noopener" data-i18n="nav.algorithm">Algorithm</a>
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to Chinese">中文</button>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow" data-i18n="hero.eyebrow">Robust DCT steganography</p>
+    <h1 data-i18n="hero.title">Hide one image inside another.</h1>
+    <p class="lead" data-i18n="hero.lead">
+      Embed a secret image into the DCT coefficients of a cover image so it survives
+      JPEG/WebP re-compression and proportional rescaling. Everything runs locally
+      in your browser — no uploads, no server.
+    </p>
+    <ul class="badges">
+      <li data-i18n="badge.zeroDeps">Zero dependencies</li>
+      <li data-i18n="badge.blind">Blind extraction</li>
+      <li data-i18n="badge.rescale">Anti-rescale</li>
+      <li data-i18n="badge.license">GPL-3.0</li>
+    </ul>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Mode" data-i18n-aria-label="tabs.label">
+    <button class="tab active" id="tabEmbed" data-tab="embed" role="tab" data-i18n="tab.embed">Embed</button>
+    <button class="tab" id="tabExtract" data-tab="extract" role="tab" data-i18n="tab.extract">Extract</button>
+  </div>
+
+  <!-- ===================== EMBED ===================== -->
+  <section id="embed" class="panel" role="tabpanel">
+    <div class="upload-grid">
+      <label class="drop" for="coverInput">
+        <input type="file" id="coverInput" accept="image/*">
+        <span class="drop-icon" aria-hidden="true">🖼️</span>
+        <span class="drop-title" data-i18n="drop.coverTitle">Cover image</span>
+        <span class="drop-hint" id="coverHint">Click to choose, or drop a file. Recommended ≥ 512×512.</span>
+      </label>
+      <label class="drop" for="secretInput">
+        <input type="file" id="secretInput" accept="image/*">
+        <span class="drop-icon" aria-hidden="true">🔒</span>
+        <span class="drop-title" data-i18n="drop.secretTitle">Secret image</span>
+        <span class="drop-hint" id="secretHint">Hidden inside the cover.</span>
+      </label>
+    </div>
+
+    <div class="row">
+      <span class="row-label" data-i18n="row.capacity">Capacity</span>
+      <span class="row-value" id="capacityInfo">—</span>
+    </div>
+
+    <div class="row">
+      <span class="row-label" data-i18n="row.coverEnhance">Cover enhance</span>
+      <select id="coverUpscale" class="grow">
+        <option value="0" data-i18n="enhance.none">Do not upscale</option>
+        <option value="2048" data-i18n="enhance.edge2048">Long edge 2048</option>
+        <option value="2560" data-i18n="enhance.edge2560">Long edge 2560</option>
+        <option value="3072" data-i18n="enhance.edge3072">Long edge 3072</option>
+        <option value="4096" data-i18n="enhance.edge4096">Long edge 4096</option>
+        <option value="custom" data-i18n="enhance.custom">Custom</option>
+      </select>
+      <input type="number" id="coverCustomLong" class="grow" min="64" max="8192" step="8" placeholder="custom long edge" inputmode="numeric" data-i18n-placeholder="enhance.customPlaceholder">
+    </div>
+
+    <div class="tier" id="racTierBar">
+      <div class="tier-wrap" id="tierSliderWrap">
+        <div class="tier-labels"><span data-i18n="tier.highQuality">High quality</span><span data-i18n="tier.antiCompression">Anti-compression</span></div>
+        <input type="range" class="tier-slider" id="tierSlider" min="0" max="100" value="50" aria-label="Operating point" data-i18n-aria-label="tier.sliderAria">
+      </div>
+      <div class="tier-info">
+        <span class="tier-name" id="tierName">Balanced</span>
+        <span class="tier-desc" id="tierDesc">Visual subtlety and compression resistance</span>
+        <button class="link-btn" id="customBtn" type="button" data-i18n="tier.customBtn">Custom parameters</button>
+      </div>
+      <div class="custom-panel" id="racCustomPanel">
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.pairs">Pairs / block</span>
+          <input type="range" id="paramPPB" min="1" max="12" value="2">
+          <span class="param-val" id="paramPPB_v">2</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.repeat">Repeat</span>
+          <input type="range" id="paramRepeat" min="1" max="5" value="1">
+          <span class="param-val" id="paramRepeat_v">1</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.ecc">ECC strength</span>
+          <input type="range" id="paramNsym" min="8" max="64" step="8" value="48">
+          <span class="param-val" id="paramNsym_v">48</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.marginMin">Min margin</span>
+          <input type="range" id="paramMarginMin" min="5" max="100" value="40">
+          <span class="param-val" id="paramMarginMin_v">40</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.marginGain">Margin gain</span>
+          <input type="range" id="paramMarginGain" min="5" max="30" value="14">
+          <span class="param-val" id="paramMarginGain_v">1.4</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.marginMax">Max margin</span>
+          <input type="range" id="paramMarginMax" min="50" max="255" value="200">
+          <span class="param-val" id="paramMarginMax_v">200</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label" data-i18n="param.secretMax">Secret long edge</span>
+          <input type="range" id="paramSecretMax" min="64" max="4096" step="64" value="1280">
+          <span class="param-val" id="paramSecretMax_v">1280</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="embedBtn" disabled data-i18n="btn.embed">Embed</button>
+      <button class="btn ghost" id="downloadStegoBtn" disabled data-i18n="btn.downloadStego">Download stego</button>
+      <button class="btn ghost" id="resetEmbedBtn" type="button" data-i18n="btn.reset">Reset</button>
+    </div>
+    <p class="status" id="embedStatus"></p>
+    <div class="progress" id="embedProgress"><div class="progress-bar"></div></div>
+
+    <div class="previews three">
+      <figure class="card">
+        <figcaption data-i18n="fig.cover">Cover</figcaption>
+        <div class="canvas-wrap"><canvas id="coverCanvas"></canvas></div>
+        <p class="meta" id="coverMeta"></p>
+      </figure>
+      <figure class="card">
+        <figcaption data-i18n="fig.secret">Secret</figcaption>
+        <div class="canvas-wrap"><canvas id="secretCanvas"></canvas></div>
+        <p class="meta" id="secretMeta"></p>
+      </figure>
+      <figure class="card">
+        <figcaption data-i18n="fig.stego">Stego result</figcaption>
+        <div class="canvas-wrap"><canvas id="stegoCanvas"></canvas></div>
+        <p class="meta" id="stegoMeta"></p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== EXTRACT ===================== -->
+  <section id="extract" class="panel hidden" role="tabpanel">
+    <label class="drop wide" for="stegoInput">
+      <input type="file" id="stegoInput" accept="image/*">
+      <span class="drop-icon" aria-hidden="true">🔍</span>
+      <span class="drop-title" data-i18n="drop.stegoTitle">Stego image</span>
+      <span class="drop-hint" id="stegoHint">The image produced by the embed step.</span>
+    </label>
+
+    <div class="manual-box">
+      <span class="manual-label" data-i18n="manual.label">Original size (optional)</span>
+      <div class="manual-inputs">
+        <input type="number" id="manualW" min="16" max="8192" placeholder="width" inputmode="numeric" data-i18n-placeholder="manual.widthPlaceholder">
+        <span>×</span>
+        <input type="number" id="manualH" min="16" max="8192" placeholder="height" inputmode="numeric" data-i18n-placeholder="manual.heightPlaceholder">
+      </div>
+      <p class="manual-hint" data-i18n="manual.hint">Used only if the spatial ruler cannot be read automatically.</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="extractBtn" disabled data-i18n="btn.extract">Extract</button>
+      <button class="btn ghost" id="downloadSecretBtn" disabled data-i18n="btn.downloadSecret">Download secret</button>
+      <button class="btn ghost" id="resetExtractBtn" type="button" data-i18n="btn.reset">Reset</button>
+    </div>
+    <p class="status" id="extractStatus"></p>
+    <div class="progress" id="extractProgress"><div class="progress-bar"></div></div>
+
+    <div class="previews two">
+      <figure class="card">
+        <figcaption data-i18n="fig.stegoInput">Stego image</figcaption>
+        <div class="canvas-wrap"><canvas id="extractStegoCanvas"></canvas></div>
+        <p class="meta" id="extractStegoMeta"></p>
+      </figure>
+      <figure class="card">
+        <figcaption data-i18n="fig.extracted">Recovered secret</figcaption>
+        <div class="canvas-wrap"><canvas id="extractedCanvas"></canvas></div>
+        <p class="meta" id="extractMeta"></p>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p data-i18n="footer.license">GPL-3.0-or-later · for research, copyright protection and lawful covert communication.</p>
+  <p class="muted" data-i18n="footer.note">Steganography hides the payload; it does not encrypt it. Encrypt first if confidentiality matters.</p>
+</footer>
+
+<script type="module" src="./demo/app.js"></script>
 </body>
 </html>

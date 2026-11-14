@@ -17,6 +17,7 @@
     "LICENSE"
   ],
   "scripts": {
+    "build:root": "node scripts/build-root-index.mjs",
     "test": "node --test"
   },
   "keywords": [
