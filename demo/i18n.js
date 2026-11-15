@@ -26,7 +26,8 @@ export const messages = {
     'hero.eyebrow': 'Robust DCT steganography',
     'hero.title': 'Hide one image inside another.',
     'hero.lead':
-      'Embed a secret image into the DCT coefficients of a cover image so it survives JPEG/WebP re-compression and proportional rescaling. Everything runs locally in your browser — no uploads, no server.',
+      'Embed a secret image into the DCT coefficients of a cover image so it survives JPEG/WebP re-compression and proportional rescaling.',
+    'hero.note': 'Everything runs locally in your browser — no uploads, no server.',
     'badge.zeroDeps': 'Zero dependencies',
     'badge.blind': 'Blind extraction',
     'badge.rescale': 'Anti-rescale',
@@ -129,9 +130,10 @@ export const messages = {
     'lang.switchTo': '切换到英文',
 
     'hero.eyebrow': '抗压缩 DCT 隐写',
-    'hero.title': '把秘密图片藏进另一张图片',
+    'hero.title': '把秘密图片\n藏进另一张图片',
     'hero.lead':
-      '把秘密图片嵌入载体图的 DCT 系数，经过 JPEG/WebP 重新压缩和等比缩放后仍可提取。全部在浏览器本地完成——不上传，不经过服务器。',
+      '将秘密图片嵌入载体图的 DCT 系数，经过 JPEG/WebP 重新压缩和等比缩放后，仍可提取。',
+    'hero.note': '全部在浏览器本地处理，不上传图片，不经过服务器。',
     'badge.zeroDeps': '零依赖',
     'badge.blind': '盲提取',
     'badge.rescale': '抗缩放',

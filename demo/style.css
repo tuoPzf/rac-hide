@@ -136,6 +136,8 @@ main,
   color: transparent;
 }
 .lead { margin: 0 0 18px; max-width: 640px; color: var(--muted); font-size: 15.5px; }
+.hero .lead { margin-bottom: 8px; }
+.hero-note { margin: 0 0 18px; color: var(--faint); font-size: 13px; line-height: 1.8; }
 .badges {
   list-style: none;
   display: flex;
@@ -454,8 +456,48 @@ select:focus, input[type="number"]:focus {
 .site-footer p { margin: 4px 0; }
 .site-footer .muted { color: #565f73; }
 
+/* Chinese needs its own rhythm, rather than condensed Latin display type. */
+html:lang(zh) body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  line-height: 1.75;
+}
+html:lang(zh) .hero { padding-top: 34px; padding-bottom: 26px; }
+html:lang(zh) .eyebrow { margin-bottom: 12px; letter-spacing: 0.06em; font-weight: 600; }
+html:lang(zh) .hero h1 {
+  max-width: 18em;
+  margin-bottom: 18px;
+  font-size: clamp(28px, 3.6vw, 40px);
+  font-weight: 650;
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+  text-wrap: balance;
+}
+html:lang(zh) .lead { max-width: 42em; line-height: 1.9; text-wrap: pretty; }
+html:lang(zh) .hero-note { max-width: 42em; margin-bottom: 22px; text-wrap: pretty; }
+html:lang(zh) .badges { gap: 7px; }
+html:lang(zh) .badges li { padding: 4px 9px; font-size: 12px; font-weight: 500; }
+html:lang(zh) .tab { font-weight: 600; }
+html:lang(zh) .drop { gap: 6px; }
+html:lang(zh) .drop-title { font-weight: 600; }
+html:lang(zh) .drop-hint { max-width: 28em; line-height: 1.8; word-break: normal; overflow-wrap: anywhere; text-wrap: pretty; }
+html:lang(zh) .row-label { white-space: nowrap; }
+html:lang(zh) .tier-info { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 12px; }
+html:lang(zh) .tier-name { grid-column: 1; grid-row: 1; }
+html:lang(zh) .tier-info .link-btn { grid-column: 2; grid-row: 1; justify-self: end; margin-left: 0; }
+html:lang(zh) .tier-desc { grid-column: 1 / -1; grid-row: 2; line-height: 1.8; }
+html:lang(zh) .param-label { flex-basis: 6em; white-space: nowrap; }
+html:lang(zh) .card figcaption { font-size: 12.5px; font-weight: 600; line-height: 1.6; letter-spacing: 0.03em; }
+html:lang(zh) .manual-hint,
+html:lang(zh) .status { line-height: 1.8; }
+html:lang(zh) .site-footer { font-size: 12.5px; line-height: 1.9; }
+html:lang(zh) .site-footer p { max-width: 50em; margin: 6px 0; text-wrap: pretty; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 680px) {
+  html:lang(zh) .hero { padding-top: 26px; padding-bottom: 22px; }
+  html:lang(zh) .hero h1 { white-space: pre-line; line-height: 1.45; }
+  html:lang(zh) .lead { font-size: 14px; }
+  html:lang(zh) .hero-note { font-size: 12.5px; }
   .upload-grid { grid-template-columns: 1fr; }
   .previews.three { grid-template-columns: repeat(2, 1fr); }
   .hero { padding: 22px 0 16px; }
@@ -468,6 +510,10 @@ select:focus, input[type="number"]:focus {
   .row .grow { flex-basis: 100%; }
 }
 @media (max-width: 460px) {
+  html:lang(zh) .site-header { gap: 8px; }
+  html:lang(zh) .brand { gap: 8px; }
+  html:lang(zh) .brand-name { font-size: 16px; }
+  html:lang(zh) .site-nav { gap: 10px; }
   .site-header { flex-wrap: wrap; }
   .previews.three,
   .previews.two { grid-template-columns: 1fr; }
